@@ -1,0 +1,5 @@
+// ADD your url below
+https://script.google.com/macros/s/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/exec
+// ADD your reminder time below (set to 0) to simply show the next upcoming event for the day
+time=0
+// !WARNING! do not edit the form, spacing, etc of these variables. Simply add your URL and desired time to prevent parse failure. 

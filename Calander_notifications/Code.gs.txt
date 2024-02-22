@@ -1,0 +1,79 @@
+ 
+function doGet() {
+  var calendar = CalendarApp.getDefaultCalendar();
+  var now = new Date();
+  var startDate = new Date();
+  startDate.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, milliseconds to 0
+  var endDate = new Date();
+  endDate.setHours(23, 59, 59, 999); // Set hours, minutes, seconds, milliseconds to their maximum values
+  var events = calendar.getEvents(startDate, endDate);
+   
+  var tasks = calendar.get
+  var result = [];
+  var res = listTasksForToday();
+  result = result.concat(res); // Append the tasks to the result array
+  for (var i = 0; i < events.length; i++) {
+    var event = events[i];
+    var year = String(event.getStartTime().getFullYear());
+    var day = String(event.getStartTime().getDay());
+    var month = String(event.getStartTime().getMonth()+1);
+    var hour_start = String(event.getStartTime().getHours());
+    var hour_end = String(event.getEndTime().getHours());
+    var minute_start = String(event.getStartTime().getMinutes());
+    var minute_end = String(event.getStartTime().getMinutes());
+    result.push({
+      'type':'event',
+      'title': event.getTitle(),
+      'start': month+"/"+day+"/"+year+"|"+hour_start+":"+minute_start,
+      'end': month+"/"+day+"/"+year+"|"+hour_end+":"+minute_end,
+      'location': event.getLocation(),
+    });
+  }
+  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+}
+function listTasksForToday() {
+  try {
+    const taskLists = Tasks.Tasklists.list();
+    if (!taskLists.items) {
+      console.log('No task lists found.');
+      return;
+    }
+    for (let i = 0; i < taskLists.items.length; i++) {
+      const taskList = taskLists.items[i];
+      //console.log('Task list with title "%s" and ID "%s" was found.', taskList.title, taskList.id);
+      
+      const tasks = Tasks.Tasks.list(taskList.id);
+      if (!tasks.items) {
+        console.log('No tasks found.');
+        continue;
+      }
+      console.log(tasks.items.length);
+      var result = [];
+      for (let j = 0; j < tasks.items.length; j++) {
+        const task = tasks.items[j];
+        const now = new Date();
+        var taskdate = task.due;
+        var task_string = String(taskdate)
+        if(task_string  != "undefined"){
+          var year = parseInt(task_string.substring(0,4));
+          var month = parseInt(task_string.substring(5,7));
+          var day = parseInt(task_string.substring(8,10));
+          // console.log(day,month,year)
+          // console.log(now.getDate(), now.getMonth()+1, now.getFullYear());
+          if(year == now.getFullYear() &&  now.getMonth()+1 == month && now.getDate() == day){
+            console.log('Task with title "%s" and ID "%s" due on "%s" was found.', task.title, task.id, task.due);
+            result.push({
+            'type': "task",
+            'title': task.title,
+            'id': task.id,
+            'due': String(month) + "/" + String(day) + "/" + String(year),
+            });
+          }
+        }    
+      }
+      return result;   
+    }
+  } catch (err) {
+    console.log('Failed with an error %s', err.message);
+  }
+}
