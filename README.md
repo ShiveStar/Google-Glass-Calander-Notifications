@@ -1,3 +1,6 @@
+A Google Glass App for XE24 which reads the ability to get calendar event notifications on Glass. Included is a settings file that allows you to set when you want to be notified (or set to 0 to simply serve them on a first come first serve basis). The event is displayed as a LiveCard. 
+
+
 This APK requires you to make a Google Apps Script. Follow the following to set it up:
 1. Go to https://script.google.com/home
 2. Make a New Project
